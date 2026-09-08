@@ -1,0 +1,514 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+
+        {
+            "name": "Python: Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+
+            "python": "${workspaceFolder}/venv/bin/python"
+        },
+
+        // ========================================
+        // All Tests
+        // ========================================
+
+        {
+            "name": "Tests: All",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: All — Failfast",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests",
+                "--verbosity=2",
+                "--keepdb",
+                "--failfast"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+
+        // ========================================
+        // Credential Access Tests
+        // ========================================
+
+        {
+            "name": "Tests: Credential — All",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_credential_access",
+                "workflow_orchestrator.tests.test_run_credential_access",
+                "workflow_orchestrator.tests.test_migrations",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Credential — Unit (Priority Resolution)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_credential_access",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Credential — Run (Execution Integration)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_credential_access",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Credential — Migration (0002)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_migrations",
+                "--verbosity=2"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+
+        // ========================================
+        // Unit Tests (no Redis / HTTP)
+        // ========================================
+
+        {
+            "name": "Tests: Unit — All",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_credential_access",
+                "workflow_orchestrator.tests.test_deduplication",
+                "workflow_orchestrator.tests.test_mock_server",
+                "workflow_orchestrator.tests.test_dag",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — Effective Pipeline",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_effective_pipeline",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — Retry Functions",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_retry",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — Pagination Functions",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_pagination",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — Deduplication",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_deduplication",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — Mock Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_mock_server",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Unit — DAG Relationships",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_dag",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+
+        // ========================================
+        // Integration / Run Tests (E2E executor → orchestrator loop)
+        // ========================================
+
+        {
+            "name": "Tests: Run — All",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_single_task",
+                "workflow_orchestrator.tests.test_run_pagination",
+                "workflow_orchestrator.tests.test_run_retry",
+                "workflow_orchestrator.tests.test_run_dag",
+                "workflow_orchestrator.tests.test_run_deduplication",
+                "workflow_orchestrator.tests.test_run_credential_access",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Run — Single Task",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_single_task",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Run — Pagination",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_pagination",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DEBUGPY_LOG_DIR": "${workspaceFolder}/workflow_orchestrator/tests/data",
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Run — Retry & Credential Refresh",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_retry",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Run — DAG & Fan-out",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_dag",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Run — Deduplication",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "test",
+                "workflow_orchestrator.tests.test_run_deduplication",
+                "--verbosity=2",
+                "--keepdb"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+
+        // ========================================
+        // Migrations
+        // ========================================
+
+        {
+            "name": "Tests: Makemigrations",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "makemigrations",
+                "workflow_orchestrator",
+                "--verbosity=2"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+        {
+            "name": "Tests: Migrate",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "migrate",
+                "--verbosity=2"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1",
+                "TESTING": "True"
+            }
+        },
+
+        // ========================================
+        // Dev Server
+        // ========================================
+
+        {
+            "name": "Django: Dev Server",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/manage.py",
+            "args": [
+                "runserver",
+                "8001",
+                "--noreload"
+            ],
+            "python": "${workspaceFolder}/venv/bin/python",
+            "django": true,
+            "justMyCode": false,
+            "console": "integratedTerminal",
+            "env": {
+                "DJANGO_SETTINGS_MODULE": "tests.settings",
+                "PYTHONUNBUFFERED": "1"
+            }
+        }
+    ]
+}

@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "workflow-orchestrator"
+version = "0.1.0"
+description = "Standalone Django app for orchestrating workflow execution using a task-based architecture."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+dependencies = [
+    "Django>=4.2",
+    "redis>=5.0",
+    "django-rq>=2.10",
+    "aiohttp>=3.9",
+    "Jinja2>=3.1",
+    "PyJWT>=2.8",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+# Cloud provider integrations — choose what you need
+gcp = [
+    "google-cloud-run>=0.10",
+    "google-cloud-tasks>=2.16",
+    "google-protobuf>=4.25",
+]
+postgres = [
+    "psycopg2-binary>=2.9",
+]
+test = [
+    "fakeredis[aioredis]>=2.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["workflow_orchestrator*"]
