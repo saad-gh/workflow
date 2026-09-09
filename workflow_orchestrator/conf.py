@@ -53,12 +53,6 @@ def get_credential_data(credential) -> dict:
     return getattr(credential, field, {}) or {}
 
 
-def get_resource_limits(resource) -> dict:
-    """Return the quota-limits dict from a Resource instance."""
-    field = getattr(settings, 'TASK_RESOURCE_LIMITS_FIELD', 'limits')
-    return getattr(resource, field, {}) or {}
-
-
 def get_organization_credentials_field():
     """Return the field name for credentials on Organization model."""
     return getattr(settings, 'TASK_ORGANIZATION_CREDENTIALS_FIELD', 'credentials')

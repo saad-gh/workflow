@@ -110,12 +110,7 @@ class Service(models.Model):
 
 class Resource(models.Model):
     """
-    A specific API endpoint within a Service.
-
-    url stores the absolute URL for this endpoint and may contain Jinja2 templates
-    for per-tenant values resolved at execution time:
-        https://api.example.com/admin/api/2024-01/orders.json
-        https://api.example.com/v3/company/{{organization.metadata.realmId}}/invoice
+    Represents an endpoint or model resource within a Service.
 
     Override with TASK_RESOURCE_MODEL to use an external resource model.
     """
@@ -125,25 +120,7 @@ class Resource(models.Model):
         on_delete=models.CASCADE,
         related_name='resources',
         null=True, blank=True,
-        help_text="The SaaS integration this resource belongs to"
-    )
-    url = models.CharField(
-        max_length=1000, blank=True,
-        help_text=(
-            "Absolute endpoint URL. Supports Jinja2 templates for per-tenant values: "
-            "https://api.example.com/v3/company/{{organization.metadata.realmId}}/invoice"
-        )
-    )
-    limits = models.JSONField(
-        default=dict, blank=True,
-        help_text=(
-            "Resource-level quota overrides (merged with Service.limits): "
-            "{'quota_rules': [{'type': 'daily', 'limit': 1000, 'scope': 'per_credential'}]}"
-        )
-    )
-    scopes = models.JSONField(
-        default=list, blank=True,
-        help_text="Required OAuth scopes for this resource: ['read_orders', 'write_products']"
+        help_text="The SaaS integration or AI provider service this resource belongs to"
     )
     metadata = models.JSONField(default=dict, blank=True)
 
@@ -153,15 +130,6 @@ class Resource(models.Model):
 
     def __str__(self):
         return f"{self.service.name}/{self.name}" if self.service else self.name
-
-    @property
-    def effective_limits(self) -> dict:
-        """Resource-level limits merged on top of service-level limits."""
-        merged = {}
-        if self.service:
-            merged.update(self.service.limits or {})
-        merged.update(self.limits or {})
-        return merged
 
 # Create your models here.
 class Attribute(models.Model):

@@ -28,10 +28,10 @@ async def _get_quota_rules(credential_id: int, service_id: int, redis) -> list:
     if cached_config:
         service_limits = json.loads(cached_config)
     else:
-        from .conf import get_resource_model
-        Resource = get_resource_model()
-        resource = await Resource.objects.filter(service_id=service_id).select_related('service').afirst()
-        service_limits = resource.effective_limits if resource else {}
+        from .conf import get_service_model
+        Service = get_service_model()
+        service = await Service.objects.filter(id=service_id).afirst()
+        service_limits = service.limits if (service and service.limits) else {}
         await redis.setex(config_key, 3600, json.dumps(service_limits))
     
     return service_limits.get('quota_rules', []), service_limits

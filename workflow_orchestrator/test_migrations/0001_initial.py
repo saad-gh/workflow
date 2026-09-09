@@ -80,9 +80,6 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('url', models.CharField(blank=True, help_text='Absolute endpoint URL. Supports Jinja2 templates for per-tenant values: https://quickbooks.api.intuit.com/v3/company/{{organization.metadata.realmId}}/invoice', max_length=1000)),
-                ('limits', models.JSONField(blank=True, default=dict, help_text="Resource-level quota overrides (merged with Service.limits): {'quota_rules': [{'type': 'daily', 'limit': 1000, 'scope': 'per_credential'}]}")),
-                ('scopes', models.JSONField(blank=True, default=list, help_text="Required OAuth scopes for this resource: ['read_orders', 'write_products']")),
                 ('metadata', models.JSONField(blank=True, default=dict)),
                 ('service', models.ForeignKey(blank=True, help_text='The SaaS integration this resource belongs to', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='resources', to=settings.TASK_SERVICE_MODEL)),
             ],
