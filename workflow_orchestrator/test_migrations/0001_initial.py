@@ -53,6 +53,7 @@ class Migration(migrations.Migration):
                 ('metadata', models.JSONField(blank=True, default=dict)),
                 ('client_id', models.CharField(blank=True, default='', help_text="OAuth2 client_id. Falls back to metadata['client_id'] if blank.", max_length=500)),
                 ('client_secret', models.CharField(blank=True, default='', help_text="OAuth2 client_secret. Falls back to metadata['client_secret'] if blank.", max_length=500)),
+                ('api_spec_path', models.CharField(blank=True, default='', help_text='Path or URI to standardized API specification document (e.g., specs/shopify-2024-01.yaml or gs://bucket/spec.yaml)', max_length=500)),
                 ('is_active', models.BooleanField(default=True)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
             ],

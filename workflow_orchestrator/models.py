@@ -97,6 +97,10 @@ class Service(models.Model):
         related_name='services_refreshed',
         help_text="The workflow executed to refresh credentials for this service."
     )
+    api_spec_path = models.CharField(
+        max_length=500, blank=True, default='',
+        help_text="Path or URI to standardized API specification document (e.g., specs/shopify-2024-01.yaml or gs://bucket/spec.yaml)"
+    )
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
