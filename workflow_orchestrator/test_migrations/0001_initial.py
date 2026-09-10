@@ -82,7 +82,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
                 ('metadata', models.JSONField(blank=True, default=dict)),
-                ('service', models.ForeignKey(blank=True, help_text='The SaaS integration this resource belongs to', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='resources', to=settings.TASK_SERVICE_MODEL)),
+                ('service', models.ForeignKey(blank=True, help_text='The SaaS integration or AI provider service this resource belongs to', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='resources', to=settings.TASK_SERVICE_MODEL)),
             ],
             options={
                 'swappable': 'TASK_RESOURCE_MODEL',
