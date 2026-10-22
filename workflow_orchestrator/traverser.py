@@ -8,7 +8,10 @@ import time
 import uuid
 from asgiref.sync import sync_to_async
 
-from .graph import WorkflowGraph, TaskNode
+logger = logging.getLogger(__name__)
+
+from .graph import WorkflowGraph, TaskNode, TaskContinuationEdge
+from .models import TaskContinuation
 from .execution_context import ExecutionContext
 from .telemetry import TelemetryLogger
 from .executors import get_executor
@@ -62,12 +65,16 @@ class WorkflowTraverser:
         """
         from asgiref.sync import sync_to_async
         from .jinja_helpers import get_jinja_env
+        from .executors import get_executor
 
         pre_conts = await sync_to_async(list)(
-            node.workflow.pre_continuations.all().order_by('priority')
+            node.workflow.pre_continuations.select_related('task').order_by('priority')
         )
         if not pre_conts:
             return True
+
+        cred_obj = await sync_to_async(node.workflow.get_primary_credential)() if hasattr(node, 'workflow') else None
+        effective_service = await sync_to_async(lambda: node.task.effective_service)() if hasattr(node, 'task') else None
 
         parent_first = self.context.parent_results[0] if self.context.parent_results else {}
         payload = parent_first.get('response_json', {}) if isinstance(parent_first, dict) else {}
@@ -79,23 +86,45 @@ class WorkflowTraverser:
             'item': self.context.fanout_item,
             'tasks': self.context.results,
             'workflow': {'organization_id': self.context.org_id},
+            'organization': getattr(getattr(node, 'workflow', None), 'organization', None),
+            'credential': cred_obj,
+            'service': effective_service or {},
         }
 
         env = get_jinja_env()
 
         for cont in pre_conts:
             cond_str = cont.condition
-            if not cond_str or cond_str.strip().lower() == "true":
-                continue
-            try:
-                template = env.from_string(cond_str)
-                rendered = template.render(**template_context).strip().lower()
-                if rendered not in ("true", "1", "yes"):
-                    logger.warning(f"Gatekeeper failed for {node.slug}: condition='{cond_str}', rendered='{rendered}'")
+            should_run = True
+            if cond_str and cond_str.strip().lower() != "true":
+                try:
+                    template = env.from_string(cond_str)
+                    rendered = template.render(**template_context).strip().lower()
+                    if rendered not in ("true", "1", "yes"):
+                        should_run = False
+                except Exception as e:
+                    self.logger.log("GATEKEEPER_ERROR", node.slug, error=str(e))
                     return False
-            except Exception as e:
-                self.logger.log("GATEKEEPER_ERROR", node.slug, error=str(e))
-                return False
+
+            if cont.task_id == node.task.id:
+                if not should_run:
+                    logger.warning(f"Gatekeeper failed for {node.slug}: condition='{cond_str}'")
+                    return False
+            elif should_run:
+                try:
+                    cont_node = TaskNode(node.workflow)
+                    cont_node.task = cont.task
+                    cont_node.slug = cont.task.slug
+                    executor = get_executor(cont.task.task_type)
+                    task_res = await executor.execute(self.context, cont_node)
+                    if task_res and isinstance(task_res, dict):
+                        self.context.set_result(cont.task.slug, task_res)
+                        if task_res.get("_workflow_action") == "skip":
+                            return False
+                    template_context['tasks'] = self.context.results
+                except Exception as e:
+                    self.logger.log("GATEKEEPER_ERROR", node.slug, error=str(e))
+                    return False
 
         return True
 
@@ -128,11 +157,30 @@ class WorkflowTraverser:
                 cont_node.slug = cont_task.slug
                 cont_node.primary_result = result
 
+                for c in await sync_to_async(list)(TaskContinuation.objects.filter(primary_task=cont_task).select_related('continuation_task')):
+                    cont_node.add_self_edge(TaskContinuationEdge(cont_node, c))
+
                 executor = get_executor(cont_task.task_type)
                 cont_result = await executor.execute(self.context, cont_node)
+                self.context.set_result(cont_task.slug, cont_result)
 
                 if cont_task.task_type == 'mutation' and isinstance(cont_result, dict):
                     self.context.update_task_params(node.slug, cont_result)
+
+                # Process chained continuations from cont_task (e.g. HTTP refresh -> ORM update)
+                for cont_edge in sorted(cont_node.self_edges, key=lambda e: e.priority):
+                    if cont_edge.should_continue(self.context, cont_result):
+                        chained_task = cont_edge.continuation.continuation_task
+                        if chained_task.slug != node.slug:
+                            chained_node = TaskNode(node.workflow)
+                            chained_node.task = chained_task
+                            chained_node.slug = chained_task.slug
+                            chained_node.primary_result = cont_result
+                            chained_executor = get_executor(chained_task.task_type)
+                            chained_res = await chained_executor.execute(self.context, chained_node)
+                            self.context.set_result(chained_task.slug, chained_res)
+                            if chained_task.task_type == 'mutation' and isinstance(chained_res, dict):
+                                self.context.update_task_params(node.slug, chained_res)
 
                 await self.traverse(node) # Re-traverse the node
                 return True

@@ -299,6 +299,21 @@ class AiohttpMocker:
             async def __aexit__(self, *_):
                 pass
 
+            def post(self_session, url, **kwargs):
+                return self_session.request("POST", url, **kwargs)
+
+            def get(self_session, url, **kwargs):
+                return self_session.request("GET", url, **kwargs)
+
+            def put(self_session, url, **kwargs):
+                return self_session.request("PUT", url, **kwargs)
+
+            def delete(self_session, url, **kwargs):
+                return self_session.request("DELETE", url, **kwargs)
+
+            def patch(self_session, url, **kwargs):
+                return self_session.request("PATCH", url, **kwargs)
+
             def request(self_session, method, url, *, params=None, **kwargs):
                 params = params or {}
                 task_slug = mocker._slug_from_url(url, method=method)
