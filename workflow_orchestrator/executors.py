@@ -97,6 +97,7 @@ class BaseExecutor(abc.ABC):
             'result': node_result,
             'credential': cred_obj,
             'service': effective_service or {},
+            'organization': getattr(getattr(node, 'workflow', None), 'organization', None),
         }
 
     def _render_task_attributes(self, attr_map: Dict[str, Any], context: dict) -> Dict[str, Any]:
@@ -265,6 +266,18 @@ class OrmExecutor(BaseExecutor):
         action = attributes.get("orm_action", "update").lower()
         orm_fields = attributes.get("orm_fields", {})
         orm_lookup = attributes.get("orm_lookup", {})
+
+        if isinstance(orm_fields, str):
+            try:
+                orm_fields = json.loads(orm_fields)
+            except Exception:
+                pass
+
+        if isinstance(orm_lookup, str):
+            try:
+                orm_lookup = json.loads(orm_lookup)
+            except Exception:
+                pass
 
         if not model_name:
             raise ValueError("orm_model is required for ORM task")
